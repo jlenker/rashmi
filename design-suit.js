@@ -7,29 +7,66 @@ document.addEventListener("DOMContentLoaded", function () {
         svg_jacket.innerHTML = (new XMLSerializer).serializeToString(data.children[0]);
 
         var jacket = {
-                breast: 'Single',
-                buttons: 'Six',
-                lapel: 'Notched',
-                stitching: 'Yes',
-                pockets: 'Three',
+                breast:       'Single',
+                buttons:      'Six',
+                lapel:        'Notched',
+                stitching:    'Yes',
+                pockets:      'Three',
                 pocket_angle: 'Straight',
-                boutonniere: 'Yes',
-                vent: 'Sides',
-                canvassing: 'Half'
+                boutonniere:  'Yes',
+                vent:         'Sides',
+                canvassing:   'Half'
 
             },
 
-            breast_single = svg_jacket.querySelector('#Single_Body_-_Front'),
-            breast_double = svg_jacket.querySelector('#Double_Body_-_Front'),
+            breast_single     = svg_jacket.querySelector('#Single_Body_-_Front'),
+            breast_single_btn = document.querySelector('.js-single-buttons'),
+            breast_double     = svg_jacket.querySelector('#Double_Body_-_Front'),
+            breast_double_btn = document.querySelector('.js-double-buttons'),
+
+            buttons_one       = svg_jacket.querySelector('#Single_Body_-_Front'),
 
             update_breast = function() {
                 switch(jacket.breast) {
                     case 'Single':
-                        breast_double.style.display  = 'none';
-                        breast_single.style.display = 'none';
+                        // SVG
+                        breast_double.style.display = 'none';
+                        breast_single.style.display = 'block';
+                        // Radio inputs
+                        breast_single_btn           = 'block';
+                        breast_double_btn           = 'none';
                         break;
                     case 'Double':
-                        breast_double.style.display  = 'block';
+                        // SVG
+                        breast_double.style.display = 'block';
+                        breast_single.style.display = 'none';
+                        // Radio inputs
+                        breast_single_btn           = 'none';
+                        breast_double_btn           = 'block';
+                        break;
+                }
+            },
+
+            update_buttons = function() {
+                switch(jacket.buttons) {
+                    case 'One':
+                        breast_double.style.display = 'none';
+                        breast_single.style.display = 'block';
+                        break;
+                    case 'Two':
+                        breast_double.style.display = 'none';
+                        breast_single.style.display = 'block';
+                        break;
+                    case 'Three':
+                        breast_double.style.display = 'none';
+                        breast_single.style.display = 'block';
+                        break;
+                    case 'Four':
+                        breast_double.style.display = 'block';
+                        breast_single.style.display = 'none';
+                        break;
+                    case 'Six':
+                        breast_double.style.display = 'block';
                         breast_single.style.display = 'none';
                         break;
                 }
@@ -55,6 +92,11 @@ document.addEventListener("DOMContentLoaded", function () {
             if (jacket.breast !== breast) {
                 jacket.breast = breast;
                 update_breast();
+            }
+
+            if (jacket.buttons !== buttons) {
+                jacket.buttons = buttons;
+                update_buttons();
             }
         }, false);
     });
