@@ -6,17 +6,19 @@ document.addEventListener("DOMContentLoaded", function () {
         var svg_jacket = document.querySelector('.embedded-design_jacket');
         svg_jacket.innerHTML = (new XMLSerializer).serializeToString(data.children[0]);
 
-        var jacket = {
+         var jacket = {
                 breast:       'Single',
-                buttons:      'Six',
+                buttons:      'One',
                 lapel:        'Notched',
+                lapel_width:  'Standard',
                 stitching:    'Yes',
                 pockets:      'Three',
                 pocket_angle: 'Straight',
                 boutonniere:  'Yes',
                 vent:         'Sides',
-                canvassing:   'Half'
+                canvassing:   'Half',
 
+                back_visible: false
             },
 
             breast_single     = svg_jacket.querySelector('#Single_Body_-_Front'),
@@ -24,80 +26,791 @@ document.addEventListener("DOMContentLoaded", function () {
             breast_double     = svg_jacket.querySelector('#Double_Body_-_Front'),
             breast_double_btn = document.querySelector('.js-double-buttons'),
 
-            buttons_one       = svg_jacket.querySelector('#Single_Body_-_Front'),
 
             update_breast = function() {
-                switch(jacket.breast) {
+                switch (jacket.breast) {
                     case 'Single':
-                        // SVG
-                        breast_double.style.display = 'none';
-                        breast_single.style.display = 'block';
-                        // Radio inputs
-                        breast_single_btn.style.display = 'flex';
-                        breast_double_btn.style.display = 'none';
-                        // Default to two buttons
-                        document.querySelector('#One').checked = true;
-                        jacket.buttons = 'One';
+                        update_breast_single();
                         break;
                     case 'Double':
-                        // SVG
-                        breast_double.style.display = 'block';
-                        breast_single.style.display = 'none';
-                        // Radio inputs
-                        breast_single_btn.style.display = 'none';
-                        breast_double_btn.style.display = 'flex';
-                        // Default to six buttons
-                        document.querySelector('#Six').checked = true;
-                        jacket.buttons = 'Six';
+                        update_breast_double();
                         break;
+                    default:
                 }
             },
 
+            update_breast_single = function() {
+                // SVG
+                breast_single.style.display = 'block';
+                breast_double.style.display = 'none';
+                // Radio inputs
+                breast_single_btn.style.display = 'flex';
+                breast_double_btn.style.display = 'none';
+                document.querySelector('.js-lapel-notched').style.display = 'flex';
+                // Default to two buttons
+                document.querySelector('#One').checked = true;
+                jacket.buttons = 'One';
+                // Default to Notched
+                document.querySelector('#Notched').checked = true;
+                jacket.lapel = 'Notched';
+
+                update_buttons();// Buttons have change and we need to reflect it
+                update_pockets();// Pockets have change and we need to reflect it
+            },
+
+            update_breast_double = function() {
+                // SVG
+                breast_double.style.display = 'block';
+                breast_single.style.display = 'none';
+                // Radio inputs
+                breast_single_btn.style.display = 'none';
+                breast_double_btn.style.display = 'flex';
+                document.querySelector('.js-lapel-notched').style.display = 'none';
+                // Default to six buttons
+                document.querySelector('#Six').checked = true;
+                jacket.buttons = 'Six';
+                // Default to Peaked
+                document.querySelector('#Peaked').checked = true;
+                jacket.lapel = 'Peaked';
+
+                update_buttons();// Buttons have change and we need to reflect it
+                update_pockets();// Pockets have change and we need to reflect it
+            },
+
             update_buttons = function() {
-                switch(jacket.buttons) {
+                switch (jacket.buttons) {
                     case 'One':
-                        breast_double.style.display = 'none';
-                        breast_single.style.display = 'block';
+                        update_button_one();
                         break;
                     case 'Two':
-                        breast_double.style.display = 'none';
-                        breast_single.style.display = 'block';
+                        update_button_two();
                         break;
                     case 'Three':
-                        breast_double.style.display = 'none';
-                        breast_single.style.display = 'block';
+                        update_button_three();
                         break;
                     case 'Four':
-                        breast_double.style.display = 'block';
-                        breast_single.style.display = 'none';
+                        update_button_four();
                         break;
                     case 'Six':
-                        breast_double.style.display = 'block';
-                        breast_single.style.display = 'none';
+                        update_button_six();
                         break;
+                    default:
+                }
+            },
+
+            update_button_one = function() {
+                svg_jacket.querySelector('#One_Buttons').style.display  = 'block';
+                svg_jacket.querySelector('#Two_Buttons').style.display  = 'none';
+                svg_jacket.querySelector('#Three_Button').style.display = 'none';
+
+                if (jacket.lapel === 'Notched') {
+                    svg_jacket.querySelector('#Noteched_-_One_Button').style.display = 'block';
+                    svg_jacket.querySelector('#Peaked_-_One_Button').style.display  = 'none';
+                    svg_jacket.querySelector('#Shawl_-_One_Button').style.display    = 'none';
+
+                    if (jacket.lapel_width === 'Standard') {
+                        svg_jacket.querySelector('#Notched_-_One_Button_-_Wide').style.display   = 'block';
+                        svg_jacket.querySelector('#Notched_-_One_Button_-_Narrow').style.display = 'none';
+
+                        if (jacket.stitching === 'Yes') {
+                            svg_jacket.querySelector('#Stitching').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Stitching').style.display   = 'none';
+                        }
+
+                        if (jacket.boutonniere === 'Yes') {
+                            svg_jacket.querySelector('#Boutonniere_19_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Boutonniere_19_').style.display   = 'none';
+                        }
+
+                    } else {
+                        svg_jacket.querySelector('#Notched_-_One_Button_-_Wide').style.display   = 'none';
+                        svg_jacket.querySelector('#Notched_-_One_Button_-_Narrow').style.display = 'block';
+
+                        if (jacket.stitching === 'Yes') {
+                            svg_jacket.querySelector('#Stitching_1_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Stitching_1_').style.display   = 'none';
+                        }
+
+                        if (jacket.boutonniere === 'Yes') {
+                            svg_jacket.querySelector('#Boutonniere_20_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Boutonniere_20_').style.display   = 'none';
+                        }
+                    }
+
+                } else if (jacket.lapel === 'Peaked') {
+                    svg_jacket.querySelector('#Noteched_-_One_Button').style.display = 'none';
+                    svg_jacket.querySelector('#Peaked_-_One_Button').style.display  = 'block';
+                    svg_jacket.querySelector('#Shawl_-_One_Button').style.display    = 'none';
+
+                    if (jacket.lapel_width === 'Standard') {
+                        svg_jacket.querySelector('#Peaked_-_One_Button_-_Wide').style.display   = 'block';
+                        svg_jacket.querySelector('#Peaked_-_One_Button_-_Narrow').style.display = 'none';
+
+                        if (jacket.stitching === 'Yes') {
+                            svg_jacket.querySelector('#Stitching_2_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Stitching_2_').style.display   = 'none';
+                        }
+
+                        if (jacket.boutonniere === 'Yes') {
+                            svg_jacket.querySelector('#Boutonniere_1_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Boutonniere_1_').style.display   = 'none';
+                        }
+
+                    } else {
+                        svg_jacket.querySelector('#Peaked_-_One_Button_-_Wide').style.display   = 'none';
+                        svg_jacket.querySelector('#Peaked_-_One_Button_-_Narrow').style.display = 'block';
+
+                        if (jacket.stitching === 'Yes') {
+                            svg_jacket.querySelector('#Stitching_3_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Stitching_3_').style.display   = 'none';
+                        }
+
+                        if (jacket.boutonniere === 'Yes') {
+                            svg_jacket.querySelector('#Boutonniere_18_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Boutonniere_18_').style.display   = 'none';
+                        }
+                    }
+
+                } else {
+                    svg_jacket.querySelector('#Noteched_-_One_Button').style.display = 'none';
+                    svg_jacket.querySelector('#Peaked_-_One_Button').style.display  = 'none';
+                    svg_jacket.querySelector('#Shawl_-_One_Button').style.display    = 'block';
+
+                    if (jacket.lapel_width === 'Standard') {
+                        svg_jacket.querySelector('#Shawl_-_One_Button_-_Wide').style.display   = 'block';
+                        svg_jacket.querySelector('#Shawl_-_One_Button_-_Narrow').style.display = 'none';
+
+                        if (jacket.stitching === 'Yes') {
+                            svg_jacket.querySelector('#Stitching_4_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Stitching_4_').style.display   = 'none';
+                        }
+
+                        if (jacket.boutonniere === 'Yes') {
+                            svg_jacket.querySelector('#Boutonniere_16_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Boutonniere_16_').style.display   = 'none';
+                        }
+
+                    } else {
+                        svg_jacket.querySelector('#Shawl_-_One_Button_-_Wide').style.display   = 'none';
+                        svg_jacket.querySelector('#Shawl_-_One_Button_-_Narrow').style.display = 'block';
+
+                        if (jacket.stitching === 'Yes') {
+                            svg_jacket.querySelector('#Stitching_5_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Stitching_5_').style.display   = 'none';
+                        }
+
+                        if (jacket.boutonniere === 'Yes') {
+                            svg_jacket.querySelector('#Boutonniere_17_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Boutonniere_17_').style.display   = 'none';
+                        }
+                    }
+                }
+            },
+
+            update_button_two = function() {
+                svg_jacket.querySelector('#One_Buttons').style.display  = 'none';
+                svg_jacket.querySelector('#Two_Buttons').style.display  = 'block';
+                svg_jacket.querySelector('#Three_Button').style.display = 'none';
+
+                if (jacket.lapel === 'Notched') {
+                    svg_jacket.querySelector('#Notched_-_Two_Button').style.display = 'block';
+                    svg_jacket.querySelector('#Peaked_-_Two_Button').style.display  = 'none';
+                    svg_jacket.querySelector('#Shawl_-_Two_Button').style.display    = 'none';
+
+                    if (jacket.lapel_width === 'Standard') {
+                        svg_jacket.querySelector('#Notched_-_Two_Button_-_Wide').style.display   = 'block';
+                        svg_jacket.querySelector('#Notched_-_Two_Button_-_Narrow').style.display = 'none';
+
+                        if (jacket.stitching === 'Yes') {
+                            svg_jacket.querySelector('#Stitching_6_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Stitching_6_').style.display   = 'none';
+                        }
+
+                        if (jacket.boutonniere === 'Yes') {
+                            svg_jacket.querySelector('#Boutonniere_10_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Boutonniere_10_').style.display   = 'none';
+                        }
+
+                    } else {
+                        svg_jacket.querySelector('#Notched_-_Two_Button_-_Wide').style.display   = 'none';
+                        svg_jacket.querySelector('#Notched_-_Two_Button_-_Narrow').style.display = 'block';
+
+                        if (jacket.stitching === 'Yes') {
+                            svg_jacket.querySelector('#Stitching_7_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Stitching_7_').style.display   = 'none';
+                        }
+
+                        if (jacket.boutonniere === 'Yes') {
+                            svg_jacket.querySelector('#Boutonniere_11_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Boutonniere_11_').style.display   = 'none';
+                        }
+                    }
+
+                } else if (jacket.lapel === 'Peaked') {
+                    svg_jacket.querySelector('#Notched_-_Two_Button').style.display = 'none';
+                    svg_jacket.querySelector('#Peaked_-_Two_Button').style.display  = 'block';
+                    svg_jacket.querySelector('#Shawl_-_Two_Button').style.display    = 'none';
+
+                    if (jacket.lapel_width === 'Standard') {
+                        svg_jacket.querySelector('#Peaked_-_Two_Button_-_Wide').style.display   = 'block';
+                        svg_jacket.querySelector('#Peaked_-_Two_Button_-_Narrow').style.display = 'none';
+
+                        if (jacket.stitching === 'Yes') {
+                            svg_jacket.querySelector('#Stitching_8_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Stitching_8_').style.display   = 'none';
+                        }
+
+                        if (jacket.boutonniere === 'Yes') {
+                            svg_jacket.querySelector('#Boutonniere_12_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Boutonniere_12_').style.display   = 'none';
+                        }
+
+                    } else {
+                        svg_jacket.querySelector('#Peaked_-_Two_Button_-_Wide').style.display   = 'none';
+                        svg_jacket.querySelector('#Peaked_-_Two_Button_-_Narrow').style.display = 'block';
+
+                        if (jacket.stitching === 'Yes') {
+                            svg_jacket.querySelector('#Stitching_9_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Stitching_9_').style.display   = 'none';
+                        }
+
+                        if (jacket.boutonniere === 'Yes') {
+                            svg_jacket.querySelector('#Boutonniere_13_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Boutonniere_13_').style.display   = 'none';
+                        }
+                    }
+
+                } else {
+                    svg_jacket.querySelector('#Notched_-_Two_Button').style.display = 'none';
+                    svg_jacket.querySelector('#Peaked_-_Two_Button').style.display  = 'none';
+                    svg_jacket.querySelector('#Shawl_-_Two_Button').style.display    = 'block';
+
+                    if (jacket.lapel_width === 'Standard') {
+                        svg_jacket.querySelector('#Shawl_-_Two_Button_-_Wide').style.display   = 'block';
+                        svg_jacket.querySelector('#Shawl_-_Two_Button_-_Narrow').style.display = 'none';
+
+                        if (jacket.stitching === 'Yes') {
+                            svg_jacket.querySelector('#Stitching_10_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Stitching_10_').style.display   = 'none';
+                        }
+
+                        if (jacket.boutonniere === 'Yes') {
+                            svg_jacket.querySelector('#Boutonniere_14_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Boutonniere_14_').style.display   = 'none';
+                        }
+
+                    } else {
+                        svg_jacket.querySelector('#Shawl_-_Two_Button_-_Wide').style.display   = 'none';
+                        svg_jacket.querySelector('#Shawl_-_Two_Button_-_Narrow').style.display = 'block';
+
+                        if (jacket.stitching === 'Yes') {
+                            svg_jacket.querySelector('#Stitching_11_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Stitching_11_').style.display   = 'none';
+                        }
+
+                        if (jacket.boutonniere === 'Yes') {
+                            svg_jacket.querySelector('#Boutonniere_15_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Boutonniere_15_').style.display   = 'none';
+                        }
+                    }
+                }
+            },
+
+            update_button_three = function() {
+                svg_jacket.querySelector('#One_Buttons').style.display  = 'none';
+                svg_jacket.querySelector('#Two_Buttons').style.display  = 'none';
+                svg_jacket.querySelector('#Three_Button').style.display = 'block';
+
+                if (jacket.lapel === 'Notched') {
+                    svg_jacket.querySelector('#Notched_-_Three_Button_1_').style.display = 'block';
+                    svg_jacket.querySelector('#Peaked_-_Three_Button').style.display  = 'none';
+                    svg_jacket.querySelector('#Shawl_-_Three_Button').style.display    = 'none';
+
+                    if (jacket.lapel_width === 'Standard') {
+                        svg_jacket.querySelector('#Notched_-_Three_Button_-_Wide').style.display   = 'block';
+                        svg_jacket.querySelector('#Notched_-_Three_Button_-_Narrow').style.display = 'none';
+
+                        if (jacket.stitching === 'Yes') {
+                            svg_jacket.querySelector('#Stitching_12_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Stitching_12_').style.display   = 'none';
+                        }
+
+                        if (jacket.boutonniere === 'Yes') {
+                            svg_jacket.querySelector('#Boutonniere_5_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Boutonniere_5_').style.display   = 'none';
+                        }
+
+                    } else {
+                        svg_jacket.querySelector('#Notched_-_Three_Button_-_Wide').style.display   = 'none';
+                        svg_jacket.querySelector('#Notched_-_Three_Button_-_Narrow').style.display = 'block';
+
+                        if (jacket.stitching === 'Yes') {
+                            svg_jacket.querySelector('#Stitching_13_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Stitching_13_').style.display   = 'none';
+                        }
+
+                        if (jacket.boutonniere === 'Yes') {
+                            svg_jacket.querySelector('#Boutonniere_6_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Boutonniere_6_').style.display   = 'none';
+                        }
+                    }
+
+                } else if (jacket.lapel === 'Peaked') {
+                    svg_jacket.querySelector('#Notched_-_Three_Button_1_').style.display = 'none';
+                    svg_jacket.querySelector('#Peaked_-_Three_Button').style.display  = 'block';
+                    svg_jacket.querySelector('#Shawl_-_Three_Button').style.display    = 'none';
+
+                    if (jacket.lapel_width === 'Standard') {
+                        svg_jacket.querySelector('#Peaked_-_Three_Button_-_Wide').style.display   = 'block';
+                        svg_jacket.querySelector('#Peaked_-_Three_Button_-_Narrow').style.display = 'none';
+
+                        if (jacket.stitching === 'Yes') {
+                            svg_jacket.querySelector('#Stitching_14_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Stitching_14_').style.display   = 'none';
+                        }
+
+                        if (jacket.boutonniere === 'Yes') {
+                            svg_jacket.querySelector('#Boutonniere_3_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Boutonniere_3_').style.display   = 'none';
+                        }
+
+                    } else {
+                        svg_jacket.querySelector('#Peaked_-_Three_Button_-_Wide').style.display   = 'none';
+                        svg_jacket.querySelector('#Peaked_-_Three_Button_-_Narrow').style.display = 'block';
+
+                        if (jacket.stitching === 'Yes') {
+                            svg_jacket.querySelector('#Stitching_15_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Stitching_15_').style.display   = 'none';
+                        }
+
+                        if (jacket.boutonniere === 'Yes') {
+                            svg_jacket.querySelector('#Boutonniere_4_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Boutonniere_4_').style.display   = 'none';
+                        }
+                    }
+
+                } else {
+                    svg_jacket.querySelector('#Notched_-_Three_Button_1_').style.display = 'none';
+                    svg_jacket.querySelector('#Peaked_-_Three_Button').style.display  = 'none';
+                    svg_jacket.querySelector('#Shawl_-_Three_Button').style.display    = 'block';
+
+                    if (jacket.lapel_width === 'Standard') {
+                        svg_jacket.querySelector('#Shawl_-_Three_Button_-_Wide').style.display   = 'block';
+                        svg_jacket.querySelector('#Shawl_-_Three_Button_-_Narrow').style.display = 'none';
+
+                        if (jacket.stitching === 'Yes') {
+                            svg_jacket.querySelector('#Stitching_16_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Stitching_16_').style.display   = 'none';
+                        }
+
+                        if (jacket.boutonniere === 'Yes') {
+                            svg_jacket.querySelector('#Boutonniere_8_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Boutonniere_8_').style.display   = 'none';
+                        }
+
+                    } else {
+                        svg_jacket.querySelector('#Shawl_-_Three_Button_-_Wide').style.display   = 'none';
+                        svg_jacket.querySelector('#Shawl_-_Three_Button_-_Narrow').style.display = 'block';
+
+                        if (jacket.stitching === 'Yes') {
+                            svg_jacket.querySelector('#Stitching_17_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Stitching_17_').style.display   = 'none';
+                        }
+
+                        if (jacket.boutonniere === 'Yes') {
+                            svg_jacket.querySelector('#Boutonniere_9_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Boutonniere_9_').style.display   = 'none';
+                        }
+                    }
+                }
+            },
+
+            update_button_four = function() {
+                svg_jacket.querySelector('#Four_Button').style.display = 'block';
+                svg_jacket.querySelector('#Six_Button').style.display  = 'none';
+
+                if (jacket.lapel === 'Peaked') {
+                    svg_jacket.querySelector('#Peaked_-_Four_Button').style.display  = 'block';
+                    svg_jacket.querySelector('#Shawl_-_Four_Button_1_').style.display    = 'none';
+
+                    if (jacket.lapel_width === 'Standard') {
+                        svg_jacket.querySelector('#Peaked_-_Four_Button_-_Wide').style.display   = 'block';
+                        svg_jacket.querySelector('#Peaked_-_Four_Button_-_Narrow').style.display = 'none';
+
+                        if (jacket.stitching === 'Yes') {
+                            svg_jacket.querySelector('#Stitching_19_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Stitching_19_').style.display   = 'none';
+                        }
+
+                        if (jacket.boutonniere === 'Yes') {
+                            svg_jacket.querySelector('#Boutonniere_2_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Boutonniere_2_').style.display   = 'none';
+                        }
+
+                    } else {
+                        svg_jacket.querySelector('#Peaked_-_Four_Button_-_Wide').style.display   = 'none';
+                        svg_jacket.querySelector('#Peaked_-_Four_Button_-_Narrow').style.display = 'block';
+
+                        if (jacket.stitching === 'Yes') {
+                            svg_jacket.querySelector('#Stitching_20_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Stitching_20_').style.display   = 'none';
+                        }
+
+                        if (jacket.boutonniere === 'Yes') {
+                            svg_jacket.querySelector('#Boutonniere_7_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Boutonniere_7_').style.display   = 'none';
+                        }
+                    }
+
+                } else {
+                    svg_jacket.querySelector('#Peaked_-_Four_Button').style.display  = 'none';
+                    svg_jacket.querySelector('#Shawl_-_Four_Button_1_').style.display    = 'block';
+
+                    if (jacket.lapel_width === 'Standard') {
+                        svg_jacket.querySelector('#Shawl_-_Four_Button_-_Wide_1_').style.display   = 'block';
+                        svg_jacket.querySelector('#Shawl_-_Four_Button_Narrow_1_').style.display = 'none';
+
+                        if (jacket.stitching === 'Yes') {
+                            svg_jacket.querySelector('#Stitching_25_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Stitching_25_').style.display   = 'none';
+                        }
+
+                        if (jacket.boutonniere === 'Yes') {
+                            svg_jacket.querySelector('#Boutonniere_25_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Boutonniere_25_').style.display   = 'none';
+                        }
+
+                    } else {
+                        svg_jacket.querySelector('#Shawl_-_Four_Button_-_Wide_1_').style.display   = 'none';
+                        svg_jacket.querySelector('#Shawl_-_Four_Button_Narrow_1_').style.display = 'block';
+
+                        if (jacket.stitching === 'Yes') {
+                            svg_jacket.querySelector('#Stitching_26_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Stitching_26_').style.display   = 'none';
+                        }
+
+                        if (jacket.boutonniere === 'Yes') {
+                            svg_jacket.querySelector('#Boutonniere_26_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Boutonniere_26_').style.display   = 'none';
+                        }
+                    }
+                }
+            },
+
+            update_button_six = function() {
+                svg_jacket.querySelector('#Four_Button').style.display = 'none';
+                svg_jacket.querySelector('#Six_Button').style.display  = 'block';
+
+                if (jacket.lapel === 'Peaked') {
+                    svg_jacket.querySelector('#Peaked_-_Six_Button').style.display  = 'block';
+                    svg_jacket.querySelector('#Shawl_-_Six_Button').style.display    = 'none';
+
+                    if (jacket.lapel_width === 'Standard') {
+                        svg_jacket.querySelector('#Peaked_-_Six_Button_-_Wide_2_').style.display   = 'block';
+                        svg_jacket.querySelector('#Peaked_-_Six_Button_-_Narrow_2_').style.display = 'none';
+
+                        if (jacket.stitching === 'Yes') {
+                            svg_jacket.querySelector('#Stitching_23_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Stitching_23_').style.display   = 'none';
+                        }
+
+                        if (jacket.boutonniere === 'Yes') {
+                            svg_jacket.querySelector('#Boutonniere_23_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Boutonniere_23_').style.display   = 'none';
+                        }
+
+                    } else {
+                        svg_jacket.querySelector('#Peaked_-_Six_Button_-_Wide_2_').style.display   = 'none';
+                        svg_jacket.querySelector('#Peaked_-_Six_Button_-_Narrow_2_').style.display = 'block';
+
+                        if (jacket.stitching === 'Yes') {
+                            svg_jacket.querySelector('#Stitching_24_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Stitching_24_').style.display   = 'none';
+                        }
+
+                        if (jacket.boutonniere === 'Yes') {
+                            svg_jacket.querySelector('#Boutonniere_24_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Boutonniere_24_').style.display   = 'none';
+                        }
+                    }
+
+                } else {
+                    svg_jacket.querySelector('#Peaked_-_Six_Button').style.display  = 'none';
+                    svg_jacket.querySelector('#Shawl_-_Six_Button').style.display    = 'block';
+
+                    if (jacket.lapel_width === 'Standard') {
+                        svg_jacket.querySelector('#Shawl_-_Six_Button_-_Wide').style.display   = 'block';
+                        svg_jacket.querySelector('#Shawl_-_Six_Button_Narrow').style.display = 'none';
+
+                        if (jacket.stitching === 'Yes') {
+                            svg_jacket.querySelector('#Stitching_21_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Stitching_21_').style.display   = 'none';
+                        }
+
+                        if (jacket.boutonniere === 'Yes') {
+                            svg_jacket.querySelector('#Boutonniere_22_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Boutonniere_22_').style.display   = 'none';
+                        }
+
+                    } else {
+                        svg_jacket.querySelector('#Shawl_-_Six_Button_-_Wide').style.display   = 'none';
+                        svg_jacket.querySelector('#Shawl_-_Six_Button_Narrow').style.display = 'block';
+
+                        if (jacket.stitching === 'Yes') {
+                            svg_jacket.querySelector('#Stitching_22_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Stitching_22_').style.display   = 'none';
+                        }
+
+                        if (jacket.boutonniere === 'Yes') {
+                            svg_jacket.querySelector('#Boutonniere_21_').style.display   = 'block';
+                        } else {
+                            svg_jacket.querySelector('#Boutonniere_21_').style.display   = 'none';
+                        }
+                    }
+                }
+            },
+
+            update_pockets = function() {
+                if (jacket.breast === 'Single') {
+                    if (jacket.pocket_angle === 'Straight') {
+                        svg_jacket.querySelector('#Pockets_-_Straight').style.display = 'block';
+                        svg_jacket.querySelector('#Pockets_-_Slanted').style.display  = 'none';
+
+                        if (jacket.pockets === 'Three') {
+                            svg_jacket.querySelector('#Pocket_-_04_-_Ticket_-_Straight').style.display = 'none';
+                        } else {
+                            svg_jacket.querySelector('#Pocket_-_04_-_Ticket_-_Straight').style.display = 'block';
+                        }
+
+                    } else {
+                        svg_jacket.querySelector('#Pockets_-_Straight').style.display = 'none';
+                        svg_jacket.querySelector('#Pockets_-_Slanted').style.display  = 'block';
+
+                        if (jacket.pockets === 'Three') {
+                            svg_jacket.querySelector('#Pocket_-_04_-_Ticket_-_Straight_1_').style.display = 'none';
+                        } else {
+                            svg_jacket.querySelector('#Pocket_-_04_-_Ticket_-_Straight_1_').style.display = 'block';
+                        }
+                    }
+
+                } else {
+                    if (jacket.pocket_angle === 'Straight') {
+                        svg_jacket.querySelector('#Pockets_-_Straight_1_').style.display = 'block';
+                        svg_jacket.querySelector('#Pockets_-_Slanted_1_').style.display  = 'none';
+
+                        if (jacket.pockets === 'Three') {
+                            svg_jacket.querySelector('#Pocket_-_04_-_Ticket_-_Straight_2_').style.display = 'none';
+                        } else {
+                            svg_jacket.querySelector('#Pocket_-_04_-_Ticket_-_Straight_2_').style.display = 'block';
+                        }
+
+                    } else {
+                        svg_jacket.querySelector('#Pockets_-_Straight_1_').style.display = 'none';
+                        svg_jacket.querySelector('#Pockets_-_Slanted_1_').style.display  = 'block';
+
+                        if (jacket.pockets === 'Three') {
+                            svg_jacket.querySelector('#Pocket_-_04_-_Ticket_-_Straight_3_').style.display = 'none';
+                        } else {
+                            svg_jacket.querySelector('#Pocket_-_04_-_Ticket_-_Straight_3_').style.display = 'block';
+                        }
+                    }
                 }
             };
 
 
+
         // Initial State
         update_breast();
+        update_buttons();
+        update_pockets();
 
 
-        document.querySelector('#form-design_jacket').addEventListener('click', function() {
-            var lapel        = document.querySelector('input[name="Lapel-Jacket"]:checked').value,
-                stitching    = document.querySelector('input[name="Stitching"]:checked').value,
-                pockets      = document.querySelector('input[name="Pockets-Jacket"]:checked').value,
-                pocket_angle = document.querySelector('input[name="Pockets-Jacket-Angle"]:checked').value,
-                boutonniere  = document.querySelector('input[name="Boutonniere"]:checked').value,
-                vent         = document.querySelector('input[name="Vent"]:checked').value,
-                canvassing   = document.querySelector('input[name="Canvassing"]:checked').value;
-
-            jacket.breast = document.querySelector('input[name="Breast"]:checked').value;
+        // Single Breast
+        document.querySelector('#Single').addEventListener('change', function(e) {
+            jacket.breast = 'Single';
             update_breast();
+        }, false);
 
-            jacket.buttons = document.querySelector('input[name="Buttons-Jacket"]:checked').value;
+        // Double Breast
+        document.querySelector('#Double').addEventListener('change', function(e) {
+            jacket.breast = 'Double';
+            update_breast();
+        }, false);
+
+        // One button
+        document.querySelector('#One').addEventListener('change', function(e) {
+            jacket.buttons = 'One';
+            update_button_one();
+        }, false);
+
+        // Two button
+        document.querySelector('#Two').addEventListener('change', function(e) {
+            jacket.buttons = 'Two';
+            update_button_two();
+        }, false);
+
+        // Three button
+        document.querySelector('#Three').addEventListener('change', function(e) {
+            jacket.buttons = 'Three';
+            update_button_three();
+        }, false);
+
+        // Four button
+        document.querySelector('#Four-5').addEventListener('change', function(e) {
+            jacket.buttons = 'Four';
+            update_button_four();
+        }, false);
+
+        // Six button
+        document.querySelector('#Six').addEventListener('change', function(e) {
+            jacket.buttons = 'Six';
+            update_button_six();
+        }, false);
+
+        // Lapel Notched
+        document.querySelector('#Notched').addEventListener('change', function(e) {
+            jacket.lapel = 'Notched';
+             update_buttons();
+        }, false);
+
+        // Lapel Peaked
+        document.querySelector('#Peaked').addEventListener('change', function(e) {
+            jacket.lapel = 'Peaked';
+             update_buttons();
+        }, false);
+
+        // Lapel Shawl
+        document.querySelector('#Shawl').addEventListener('change', function(e) {
+            jacket.lapel = 'Shawl';
             update_buttons();
         }, false);
+
+        // Lapel width Standard
+        document.querySelector('#Standard-3').addEventListener('change', function(e) {
+            jacket.lapel_width = 'Standard';
+            update_buttons();
+        }, false);
+
+        // Lapel width Narrow
+        document.querySelector('#Narrow').addEventListener('change', function(e) {
+            jacket.lapel_width = 'Narrow';
+            update_buttons();
+        }, false);
+
+        // Lapel Stitch Yes
+        document.querySelector('#Yes-3').addEventListener('change', function(e) {
+            jacket.stitching = 'Yes';
+            update_buttons();
+        }, false);
+
+        // Lapel Stitch No
+        document.querySelector('#No-3').addEventListener('change', function(e) {
+            jacket.stitching = 'No';
+            update_buttons();
+        }, false);
+
+        // Pockets Three
+        document.querySelector('#Three-3').addEventListener('change', function(e) {
+            jacket.pockets = 'Three';
+            update_pockets();
+        }, false);
+
+        // Pockets Four
+        document.querySelector('#Four-2').addEventListener('change', function(e) {
+            jacket.pockets = 'Four';
+            update_pockets();
+        }, false);
+
+        // Pockets angle Straight
+        document.querySelector('#Straight').addEventListener('change', function(e) {
+            jacket.pocket_angle = 'Straight';
+            update_pockets();
+        }, false);
+
+        // Pockets angle Slanted
+        document.querySelector('#Slanted').addEventListener('change', function(e) {
+            jacket.pocket_angle = 'Slanted';
+            update_pockets();
+        }, false);
+
+        // Boutonniere Yes
+        document.querySelector('#Yes-4').addEventListener('change', function(e) {
+            jacket.boutonniere = 'Yes';
+            update_buttons();
+        }, false);
+
+        // Boutonniere No
+        document.querySelector('#No-4').addEventListener('change', function(e) {
+            jacket.boutonniere = 'No';
+            update_buttons();
+        }, false);
+
+
+        /*document.querySelector('.js-jacket-backside').addEventListener('click', function() {
+            if (jacket.back_visible) {
+                jacket.back_visible = false;
+                front.style.display = 'block';
+                back.style.display  = 'none';
+                document.querySelector('.js-jacket-backside').innerHTML = 'See BackSide';
+
+            } else {
+                jacket.back_visible = true;
+                front.style.display = 'none';
+                back.style.display  = 'block';
+                document.querySelector('.js-jacket-backside').innerHTML = 'See FrontSide';
+            }
+        }, false);*/
     });
 
 
