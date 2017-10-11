@@ -84,9 +84,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         document.querySelector('#form-design_jacket').addEventListener('click', function() {
-            var breast       = document.querySelector('input[name="Breast"]:checked').value,
-                buttons      = document.querySelector('input[name="Buttons-Jacket"]:checked').value,
-                lapel        = document.querySelector('input[name="Lapel-Jacket"]:checked').value,
+            var lapel        = document.querySelector('input[name="Lapel-Jacket"]:checked').value,
                 stitching    = document.querySelector('input[name="Stitching"]:checked').value,
                 pockets      = document.querySelector('input[name="Pockets-Jacket"]:checked').value,
                 pocket_angle = document.querySelector('input[name="Pockets-Jacket-Angle"]:checked').value,
@@ -94,16 +92,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 vent         = document.querySelector('input[name="Vent"]:checked').value,
                 canvassing   = document.querySelector('input[name="Canvassing"]:checked').value;
 
+            jacket.breast = document.querySelector('input[name="Breast"]:checked').value;
+            update_breast();
 
-            if (jacket.breast !== breast) {
-                jacket.breast = breast;
-                update_breast();
-            }
-
-            if (jacket.buttons !== buttons) {
-                jacket.buttons = buttons;
-                update_buttons();
-            }
+            jacket.buttons = document.querySelector('input[name="Buttons-Jacket"]:checked').value;
+            update_buttons();
         }, false);
     });
 
