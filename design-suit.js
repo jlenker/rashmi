@@ -35,6 +35,9 @@ document.addEventListener("DOMContentLoaded", function () {
                         // Radio inputs
                         breast_single_btn.style.display = 'flex';
                         breast_double_btn.style.display = 'none';
+                        // Default to two buttons
+                        document.querySelector('#One').checked = true;
+                        jacket.buttons = 'One';
                         break;
                     case 'Double':
                         // SVG
@@ -43,6 +46,9 @@ document.addEventListener("DOMContentLoaded", function () {
                         // Radio inputs
                         breast_single_btn.style.display = 'none';
                         breast_double_btn.style.display = 'flex';
+                        // Default to six buttons
+                        document.querySelector('#Six').checked = true;
+                        jacket.buttons = 'Six';
                         break;
                 }
             },
