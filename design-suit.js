@@ -33,16 +33,16 @@ document.addEventListener("DOMContentLoaded", function () {
                         breast_double.style.display = 'none';
                         breast_single.style.display = 'block';
                         // Radio inputs
-                        breast_single_btn           = 'block';
-                        breast_double_btn           = 'none';
+                        breast_single_btn.style.display = 'block';
+                        breast_double_btn.style.display = 'none';
                         break;
                     case 'Double':
                         // SVG
                         breast_double.style.display = 'block';
                         breast_single.style.display = 'none';
                         // Radio inputs
-                        breast_single_btn           = 'none';
-                        breast_double_btn           = 'block';
+                        breast_single_btn.style.display = 'none';
+                        breast_double_btn.style.display = 'block';
                         break;
                 }
             },
