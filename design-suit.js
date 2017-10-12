@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
         var svg_jacket = document.querySelector('.embedded-design_jacket');
         svg_jacket.innerHTML = (new XMLSerializer).serializeToString(data.children[0]);
 
-         var jacket = {
+        var jacket = {
                 breast:       'Single',
                 buttons:      'One',
                 lapel:        'Notched',
@@ -26,6 +26,31 @@ document.addEventListener("DOMContentLoaded", function () {
             breast_double     = svg_jacket.querySelector('#Double_Body_-_Front'),
             breast_double_btn = document.querySelector('.js-double-buttons'),
 
+
+            update_side = function() {
+                if (jacket.back_visible) {
+                    svg_jacket.querySelector('#Back').style.display                = 'block';
+                    svg_jacket.querySelector('#Single_Body_-_Front').style.display = 'none';
+                    svg_jacket.querySelector('#Double_Body_-_Front').style.display = 'none';
+                    if (jacket.stitching === 'Yes') {
+                        svg_jacket.querySelector('#Stitching_18_').style.display = 'block';
+                    } else {
+                        svg_jacket.querySelector('#Stitching_18_').style.display = 'none';
+                    }
+                    update_vents();
+
+                    document.querySelector('.js-jacket-fronside').style.display    = 'none';
+                    document.querySelector('.js-jacket-backside').style.display    = 'flex';
+                    document.querySelector('.js-jacket-otherside-btn').innerHTML   = 'See FrontSide';
+
+                } else {
+                    svg_jacket.querySelector('#Back').style.display                = 'none';
+                    update_breast();
+                    document.querySelector('.js-jacket-fronside').style.display    = 'block';
+                    document.querySelector('.js-jacket-backside').style.display    = 'none';
+                    document.querySelector('.js-jacket-otherside-btn').innerHTML   = 'See BackSide';
+                }
+            },
 
             update_breast = function() {
                 switch (jacket.breast) {
@@ -666,11 +691,28 @@ document.addEventListener("DOMContentLoaded", function () {
                         }
                     }
                 }
+            },
+
+            update_vents = function() {
+                if (jacket.vent === 'Center') {
+                    svg_jacket.querySelector('#Vents_-_Center').style.display = 'block';
+                    svg_jacket.querySelector('#Vents_-_Sides').style.display  = 'none';
+                    svg_jacket.querySelector('#Vents_-_None').style.display   = 'none';
+                } else if (jacket.vent === 'Sides') {
+                    svg_jacket.querySelector('#Vents_-_Center').style.display = 'none';
+                    svg_jacket.querySelector('#Vents_-_Sides').style.display  = 'block';
+                    svg_jacket.querySelector('#Vents_-_None').style.display   = 'none';
+                } else {
+                    svg_jacket.querySelector('#Vents_-_Center').style.display = 'none';
+                    svg_jacket.querySelector('#Vents_-_Sides').style.display  = 'none';
+                    svg_jacket.querySelector('#Vents_-_None').style.display   = 'block';
+                }
             };
 
 
 
         // Initial State
+        update_side();
         update_breast();
         update_buttons();
         update_pockets();
@@ -796,21 +838,31 @@ document.addEventListener("DOMContentLoaded", function () {
             update_buttons();
         }, false);
 
+        // Vent Center
+        document.querySelector('#Center').addEventListener('change', function(e) {
+            jacket.vent = 'Center';
+            update_vents();
+        }, false);
 
-        /*document.querySelector('.js-jacket-backside').addEventListener('click', function() {
-            if (jacket.back_visible) {
-                jacket.back_visible = false;
-                front.style.display = 'block';
-                back.style.display  = 'none';
-                document.querySelector('.js-jacket-backside').innerHTML = 'See BackSide';
+        // Vent Sides
+        document.querySelector('#Sides').addEventListener('change', function(e) {
+            jacket.vent = 'Sides';
+            update_vents();
+        }, false);
 
-            } else {
-                jacket.back_visible = true;
-                front.style.display = 'none';
-                back.style.display  = 'block';
-                document.querySelector('.js-jacket-backside').innerHTML = 'See FrontSide';
-            }
-        }, false);*/
+        // Vent None
+        document.querySelector('#None-2').addEventListener('change', function(e) {
+            jacket.vent = 'None';
+            update_vents();
+        }, false);
+
+
+        document.querySelector('.js-jacket-otherside-btn').addEventListener('click', function(e) {
+            jacket.back_visible = !jacket.back_visible;
+            update_side();
+            e.preventDefault();
+            return false;
+        }, false);
     });
 
 
