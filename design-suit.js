@@ -32,6 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     local_extra = "AND(" + local_extra +  ")";
                     url += formula + encodeURIComponent(local_extra);
                 }
+                console.log(url);
 
 
                 $.ajax({
@@ -45,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                         for(var i = 0, len = records.length; i < len; i++) {
                             string +=   '<div class="fabric-holder">';
-                            string +=       '<div class="fabric-swatch" deluminate_imagetype="png">';
+                            string +=       '<div class="fabric-swatch" deluminate_imagetype="png" style="background-image:url(http://uploads.webflow.com/5973abd…/59c8016…_Highlight-Tile.png), url(' + records[i].fields.Scan[0].url + ');">';
                             string +=           '<div class="text-block-5">' + records[i].fields['Fabric No.'] + '</div>';
                             string +=       '</div>';
                             string +=   '</div>';
@@ -101,6 +102,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             api();
 
+            // Closing the filter options
+            e.target.parentNode.parentNode.parentNode.style.display = 'none';
             e.preventDefault();
         }, false);
 
@@ -135,6 +138,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             api();
 
+            // Closing the filter options
+            e.target.parentNode.parentNode.parentNode.style.display = 'none';
             e.preventDefault();
         }, false);
 
@@ -169,6 +174,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             api();
 
+            // Closing the filter options
+            e.target.parentNode.parentNode.parentNode.style.display = 'none';
             e.preventDefault();
         }, false);
 
@@ -203,6 +210,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             api();
 
+            // Closing the filter options
+            e.target.parentNode.parentNode.parentNode.style.display = 'none';
             e.preventDefault();
         }, false);
 
