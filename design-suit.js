@@ -47,12 +47,54 @@ document.addEventListener("DOMContentLoaded", function () {
                         for(var i = 0, len = records.length; i < len; i++) {
                             string +=   '<div class="fabric-holder">';
                             string +=       '<div class="fabric-swatch" deluminate_imagetype="png" style="background-image:url(http://uploads.webflow.com/5973abd…/59c8016…_Highlight-Tile.png), url(' + records[i].fields.Scan[0].url + ');">';
-                            string +=           '<div class="text-block-5">' + records[i].fields['Fabric No.'] + '</div>';
+                            string +=           '<div class="fabric-label">' + records[i].fields['Brand'] + ' • ' + records[i].fields['Fabric No.'] + '</div>';
+                            string +=           '<div class="swatch-overlay">';
+                            string +=               '<div class="fabric-description">' + records[i].fields['Description'] + '</div>';
+                            string +=               '<button class="choose-this">Choose</button>';
+                            string +=           '</div>';
                             string +=       '</div>';
                             string +=   '</div>';
                         }
-                        document.querySelector('.js-fabrics').innerHTML = string;
 
+                        document.querySelector('.js-fabrics').innerHTML = string;
+                        document.querySelector('.js-fabrics').addEventListener('click', function(e) {
+                            var getParent = function(el) {
+                                    var item = el;
+                                    while(!item.classList.contains('fabric-swatch')) {
+                                        if (item.classList.contains('js-fabrics')) {
+                                            return false;
+                                        }
+                                        item = item.parentNode;
+                                    }
+                                    return item;
+                                },
+                                parent = getParent(e.target);
+
+                            if (e.target.classList.contains('choose-this') && parent.classList.contains('active')) {
+                                // Choose this fabric and move to liner
+                                console.log('Choosen');
+                                document.querySelector('.w-tab-menu .w--current').classList.remove('w--current');
+                                document.querySelector('.w-tab-menu .tab-link[data-w-tab="Tab 5"]').classList.add('w--current');
+                                document.querySelector('.w-tab-content .w--tab-active').classList.remove('w--tab-active');
+                                document.querySelector('.w-tab-content .tab-holder[data-w-tab="Tab 5"]').classList.add('w--tab-active');
+                            } else {
+                                var list = [];
+
+                                if (parent.classList.contains('fabric-swatch')) {
+                                    if (parent.classList.contains('active')) {
+                                        parent.classList.remove('active');
+                                    } else {
+                                        list = document.querySelectorAll('.js-fabrics .fabric-swatch.active');
+                                        for (var i = 0, len = list.length; i < len; i++) {
+                                            list[i].classList.remove('active');
+                                        }
+                                        parent.classList.add('active');
+                                    }
+                                }
+                            }
+                        });
+
+                        // TODO
                         pagination();
                     }
                 });
