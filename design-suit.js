@@ -1,9 +1,66 @@
 document.addEventListener("DOMContentLoaded", function () {
+    var overall_suit = {
+            fabric: null,
+            lining: null
+        },
+
+        next_step = function(section) {
+            var index = 0;
+            switch(section) {
+                case 'liner':
+                    index = 5;
+                    break;
+                case 'jacket':
+                    index = 2;
+                    break;
+                case 'vest':
+                    index = 3;
+                    break;
+                case 'pants':
+                    index = 4;
+                    break;
+            }
+
+            document.querySelector('.w-tab-menu .w--current').classList.remove('w--current');
+            document.querySelector('.w-tab-menu .tab-link[data-w-tab="Tab ' + index + '"]').classList.add('w--current');
+            document.querySelector('.w-tab-content .tab-holder.w--tab-active').classList.remove('w--tab-active');
+            document.querySelector('.w-tab-content .tab-holder[data-w-tab="Tab ' + index + '"]').classList.add('w--tab-active');
+        },
+
+        update_fabric_samples = function() {
+            var background_image = 'url(http://uploads.webflow.com/5973abd…/59c8016…_Highlight-Tile.png), url(' + overall_suit.fabric.fields.Scan[0].url + ')',
+                name             = overall_suit.fabric.fields['Brand'] + ' • ' + overall_suit.fabric.fields['Fabric No.'];
+
+            document.querySelector('.w-tab-content div[data-w-tab="Tab 2"] .fabric-swatch').style.backgroundImage   = background_image;
+            document.querySelector('.w-tab-content div[data-w-tab="Tab 2"] .fabric-swatch .fabric-label').innerHTML = name;
+
+            document.querySelector('.w-tab-content div[data-w-tab="Tab 3"] .fabric-swatch').style.backgroundImage   = background_image;
+            document.querySelector('.w-tab-content div[data-w-tab="Tab 3"] .fabric-swatch .fabric-label').innerHTML = name;
+
+            document.querySelector('.w-tab-content div[data-w-tab="Tab 4"] .fabric-swatch').style.backgroundImage   = background_image;
+            document.querySelector('.w-tab-content div[data-w-tab="Tab 4"] .fabric-swatch .fabric-label').innerHTML = name;
+        },
+
+        update_lining_samples = function() {
+            var background_image = 'url(http://uploads.webflow.com/5973abd…/59c8016…_Highlight-Tile.png), url(' + overall_suit.lining.fields.Scan[0].url + ')',
+                name             = overall_suit.lining.fields['Brand'] + ' • ' + overall_suit.lining.fields['Lining No.'];
+
+            document.querySelector('.w-tab-content div[data-w-tab="Tab 2"] .fabric-swatch.liner').style.backgroundImage   = background_image;
+            document.querySelector('.w-tab-content div[data-w-tab="Tab 2"] .fabric-swatch.liner .fabric-label').innerHTML = name;
+
+            document.querySelector('.w-tab-content div[data-w-tab="Tab 3"] .fabric-swatch.liner').style.backgroundImage   = background_image;
+            document.querySelector('.w-tab-content div[data-w-tab="Tab 3"] .fabric-swatch.liner .fabric-label').innerHTML = name;
+
+            document.querySelector('.w-tab-content div[data-w-tab="Tab 4"] .fabric-swatch.liner').style.backgroundImage   = background_image;
+            document.querySelector('.w-tab-content div[data-w-tab="Tab 4"] .fabric-swatch.liner .fabric-label').innerHTML = name;
+        };
+
+
     /*
         Fabric
     */
     (function() {
-        var base_api_url   = 'https://api.airtable.com/v0/appur8GNl81ghwpSy/Fabric?maxRecords=10&view=Grid%20view',
+        var base_api_url   = 'https://api.airtable.com/v0/appur8GNl81ghwpSy/Fabric?maxRecords=20&view=Grid%20view',
             formula        = '&filterByFormula=',
             records        = [],
             records_length = 0,
@@ -32,7 +89,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     local_extra = "AND(" + local_extra +  ")";
                     url += formula + encodeURIComponent(local_extra);
                 }
-                console.log(url);
 
 
                 $.ajax({
@@ -45,15 +101,17 @@ document.addEventListener("DOMContentLoaded", function () {
                         records_length = records.length;
 
                         for(var i = 0, len = records.length; i < len; i++) {
-                            string +=   '<div class="fabric-holder">';
-                            string +=       '<div class="fabric-swatch" deluminate_imagetype="png" style="background-image:url(http://uploads.webflow.com/5973abd…/59c8016…_Highlight-Tile.png), url(' + records[i].fields.Scan[0].url + ');">';
-                            string +=           '<div class="fabric-label">' + records[i].fields['Brand'] + ' • ' + records[i].fields['Fabric No.'] + '</div>';
-                            string +=           '<div class="swatch-overlay">';
-                            string +=               '<div class="fabric-description">' + records[i].fields['Description'] + '</div>';
-                            string +=               '<button class="choose-this">Choose</button>';
-                            string +=           '</div>';
-                            string +=       '</div>';
-                            string +=   '</div>';
+                            if (records[i].fields.Type === 'Suit') {
+                                string +=   '<div class="fabric-holder">';
+                                string +=       '<div class="fabric-swatch" deluminate_imagetype="png" style="background-image:url(http://uploads.webflow.com/5973abd…/59c8016…_Highlight-Tile.png), url(' + records[i].fields.Scan[0].url + ');">';
+                                string +=           '<div class="fabric-label">' + records[i].fields['Brand'] + ' • ' + records[i].fields['Fabric No.'] + '</div>';
+                                string +=           '<div class="swatch-overlay">';
+                                string +=               '<div class="fabric-description">' + records[i].fields['Description'] + '</div>';
+                                string +=               '<button class="choose-this" data-index="' + i + '">Choose</button>';
+                                string +=           '</div>';
+                                string +=       '</div>';
+                                string +=   '</div>';
+                            }
                         }
 
                         document.querySelector('.js-fabrics').innerHTML = string;
@@ -72,11 +130,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
                             if (e.target.classList.contains('choose-this') && parent.classList.contains('active')) {
                                 // Choose this fabric and move to liner
-                                console.log('Choosen');
-                                document.querySelector('.w-tab-menu .w--current').classList.remove('w--current');
-                                document.querySelector('.w-tab-menu .tab-link[data-w-tab="Tab 5"]').classList.add('w--current');
-                                document.querySelector('.w-tab-content .w--tab-active').classList.remove('w--tab-active');
-                                document.querySelector('.w-tab-content .tab-holder[data-w-tab="Tab 5"]').classList.add('w--tab-active');
+                                next_step('liner');
+                                overall_suit.fabric = records[e.target.getAttribute('data-index')];
+                                update_fabric_samples();
                             } else {
                                 var list = [];
 
@@ -238,6 +294,265 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         document.querySelector('.js-fabric-brand .apply-button').addEventListener('click', function(e) {
+            var index = 0;
+
+            brand_query = "OR(";
+
+            for (var property in brand) {
+                if (brand.hasOwnProperty(property) && brand[property]) {
+                    brand_query += (index > 0 ? ',' : '') + "{Brand}='" + property + "'";
+                    index++;
+                }
+            }
+            brand_query = index ? (brand_query + ")") : '';
+
+            api();
+
+            // Closing the filter options
+            e.target.parentNode.parentNode.parentNode.style.display = 'none';
+            e.preventDefault();
+        }, false);
+
+    })();
+
+
+
+    /*
+        Lining
+    */
+    (function() {
+        var base_api_url   = 'https://api.airtable.com/v0/appur8GNl81ghwpSy/Lining?maxRecords=20&view=Grid%20view',
+            formula        = '&filterByFormula=',
+            records        = [],
+            records_length = 0,
+            base_color_query = '',
+            pattern_query    = '',
+            price_tier_query = '',
+            brand_query      = '',
+
+            api = function() {
+                var url         = base_api_url,
+                    local_extra = "";
+
+                if (base_color_query + pattern_query + price_tier_query + brand_query) {
+                    if (base_color_query) {
+                        local_extra += base_color_query;
+                    }
+                    if (pattern_query) {
+                        local_extra += (local_extra ? ',' : '') + pattern_query;
+                    }
+                    if (price_tier_query) {
+                        local_extra += (local_extra ? ',' : '') + price_tier_query;
+                    }
+                    if (brand_query) {
+                        local_extra += (local_extra ? ',' : '') + brand_query;
+                    }
+                    local_extra = "AND(" + local_extra +  ")";
+                    url += formula + encodeURIComponent(local_extra);
+                }
+
+
+                $.ajax({
+                    method:  'GET',
+                    url:     url,
+                    headers: { 'Authorization': 'Bearer keyKXU2q4rXvyv4Vp'},
+                    success: function(data) {
+                        var string  = '';
+                        records        = data.records;
+                        records_length = records.length;
+
+                        for(var i = 0, len = records.length; i < len; i++) {
+                            string +=   '<div class="fabric-holder">';
+                            string +=       '<div class="fabric-swatch" deluminate_imagetype="png" style="background-image:url(http://uploads.webflow.com/5973abd…/59c8016…_Highlight-Tile.png), url(' + records[i].fields.Scan[0].url + ');">';
+                            string +=           '<div class="fabric-label">' + records[i].fields['Brand'] + ' • ' + records[i].fields['Lining No.'] + '</div>';
+                            string +=           '<div class="swatch-overlay">';
+                            string +=               '<div class="fabric-description">' + records[i].fields['Description'] + '</div>';
+                            string +=               '<button class="choose-this" data-index="' + i + '">Choose</button>';
+                            string +=           '</div>';
+                            string +=       '</div>';
+                            string +=   '</div>';
+                        }
+
+                        document.querySelector('.js-liners').innerHTML = string;
+                        document.querySelector('.js-liners').addEventListener('click', function(e) {
+                            var getParent = function(el) {
+                                    var item = el;
+                                    while(!item.classList.contains('fabric-swatch')) {
+                                        if (item.classList.contains('js-liners')) {
+                                            return false;
+                                        }
+                                        item = item.parentNode;
+                                    }
+                                    return item;
+                                },
+                                parent = getParent(e.target);
+
+                            if (e.target.classList.contains('choose-this') && parent.classList.contains('active')) {
+                                // Choose this Lining and move to Jacket
+                                next_step('jacket');
+                                overall_suit.lining = records[e.target.getAttribute('data-index')];
+                                update_lining_samples();
+                            } else {
+                                var list = [];
+
+                                if (parent.classList.contains('fabric-swatch')) {
+                                    if (parent.classList.contains('active')) {
+                                        parent.classList.remove('active');
+                                    } else {
+                                        list = document.querySelectorAll('.js-liners .fabric-swatch.active');
+                                        for (var i = 0, len = list.length; i < len; i++) {
+                                            list[i].classList.remove('active');
+                                        }
+                                        parent.classList.add('active');
+                                    }
+                                }
+                            }
+                        });
+
+                        // TODO
+                        pagination();
+                    }
+                });
+            },
+
+            pagination = function() {
+                document.querySelector('.js-lining-pagination').innerHTML = records_length + ' items';
+            };
+
+
+
+        /*
+            Initial data
+        */
+        api();
+
+
+
+
+        // .js-lining-base-color
+        var base_color = {},
+            i = 0, len = 0,
+            base_color_btns = document.querySelectorAll('.js-lining-base-color .w-checkbox');
+
+        for (i = 0, len = base_color_btns.length; i < len; i++) {
+            (function() {
+                var input = base_color_btns[i].querySelector('.w-checkbox-input');
+                base_color[input.getAttribute('data-name')] = false;
+                input.addEventListener('change', function(e) {
+                    base_color[input.getAttribute('data-name')] = input.checked ? true : false;
+                }, false);
+            })();
+        }
+
+        document.querySelector('.js-lining-base-color .apply-button').addEventListener('click', function(e) {
+            var index = 0;
+
+            base_color_query = "OR(";
+
+            for (var property in base_color) {
+                if (base_color.hasOwnProperty(property) && base_color[property]) {
+                    base_color_query += (index > 0 ? ',' : '') + "{Base Color}='" + property + "'";
+                    index++;
+                }
+            }
+            base_color_query = index ? (base_color_query + ")") : '';
+
+            api();
+
+            // Closing the filter options
+            e.target.parentNode.parentNode.parentNode.style.display = 'none';
+            e.preventDefault();
+        }, false);
+
+
+
+        // .js-lining-pattern
+        var pattern      = {},
+            pattern_btns = document.querySelectorAll('.js-lining-pattern .w-checkbox');
+
+        for (i = 0, len = pattern_btns.length; i < len; i++) {
+            (function() {
+                var input = pattern_btns[i].querySelector('.w-checkbox-input');
+                pattern[input.getAttribute('data-name')] = false;
+                input.addEventListener('change', function(e) {
+                    pattern[input.getAttribute('data-name')] = input.checked ? true : false;
+                }, false);
+            })();
+        }
+
+        document.querySelector('.js-lining-pattern .apply-button').addEventListener('click', function(e) {
+            var index = 0;
+
+            pattern_query = "OR(";
+
+            for (var property in pattern) {
+                if (pattern.hasOwnProperty(property) && pattern[property]) {
+                    pattern_query += (index > 0 ? ',' : '') + "{Pattern}='" + property + "'";
+                    index++;
+                }
+            }
+            pattern_query = index ? (pattern_query + ")") : '';
+
+            api();
+
+            // Closing the filter options
+            e.target.parentNode.parentNode.parentNode.style.display = 'none';
+            e.preventDefault();
+        }, false);
+
+
+
+        // .js-lining-price-tier
+        var price_tier      = {},
+            price_tier_btns = document.querySelectorAll('.js-lining-price-tier .w-checkbox');
+
+        for (i = 0, len = price_tier_btns.length; i < len; i++) {
+            (function() {
+                var input = price_tier_btns[i].querySelector('.w-checkbox-input');
+                price_tier[input.getAttribute('data-name')] = false;
+                input.addEventListener('change', function(e) {
+                    price_tier[input.getAttribute('data-name')] = input.checked ? true : false;
+                }, false);
+            })();
+        }
+
+        document.querySelector('.js-lining-price-tier .apply-button').addEventListener('click', function(e) {
+            var index = 0;
+
+            price_tier_query = "OR(";
+
+            for (var property in price_tier) {
+                if (price_tier.hasOwnProperty(property) && price_tier[property]) {
+                    price_tier_query += (index > 0 ? ',' : '') + "{Price Tier}='" + property + "'";
+                    index++;
+                }
+            }
+            price_tier_query = index ? (price_tier_query + ")") : '';
+
+            api();
+
+            // Closing the filter options
+            e.target.parentNode.parentNode.parentNode.style.display = 'none';
+            e.preventDefault();
+        }, false);
+
+
+
+        // .js-lining-brand
+        var brand      = {},
+            brand_btns = document.querySelectorAll('.js-lining-brand .w-checkbox');
+
+        for (i = 0, len = brand_btns.length; i < len; i++) {
+            (function() {
+                var input = brand_btns[i].querySelector('.w-checkbox-input');
+                brand[input.getAttribute('data-name')] = false;
+                input.addEventListener('change', function(e) {
+                    brand[input.getAttribute('data-name')] = input.checked ? true : false;
+                }, false);
+            })();
+        }
+
+        document.querySelector('.js-lining-brand .apply-button').addEventListener('click', function(e) {
             var index = 0;
 
             brand_query = "OR(";
@@ -1125,6 +1440,15 @@ document.addEventListener("DOMContentLoaded", function () {
             e.preventDefault();
             return false;
         }, false);
+
+
+        /* Choose this jacket configuration */
+        document.querySelector('#form-design_jacket .choose-this').addEventListener('click', function(e) {
+            overall_suit.jacket = jacket;
+            next_step('vest');
+            e.preventDefault();
+            return false;
+        }, false);
     });
 
 
@@ -1137,6 +1461,13 @@ document.addEventListener("DOMContentLoaded", function () {
         svg_vest.innerHTML = (new XMLSerializer).serializeToString(data.children[0]);
 
         var vest = {
+                back_visible: false,
+                lapel:        'None',
+                buttons:      'Four',
+                pockets:      'Two',
+                back:         'Lining'
+            },
+            bkp_vest = {
                 back_visible: false,
                 lapel:        'None',
                 buttons:      'Four',
@@ -1299,6 +1630,42 @@ document.addEventListener("DOMContentLoaded", function () {
                 back.style.display  = 'block';
                 btn_other_side.innerHTML = 'See FrontSide';
             }
+        }, false);
+
+
+        var toggle_other_options = function(value) {
+            var options = document.querySelectorAll('#form-design_vest > .option-row');
+
+            for (var i = 0, len = options.length; i < len; i++) {
+                options[i].style.display = value;
+            }
+        };
+
+        // Initial state
+        toggle_other_options('none');
+
+        // No Vest
+        document.querySelector('#No-6').addEventListener('change', function(e) {
+            toggle_other_options('none');
+
+            bkp_vest = vest;
+            vest = {};
+        }, false);
+
+        // Yes to Vest
+        document.querySelector('#Yes-6').addEventListener('change', function(e) {
+            toggle_other_options('flex');
+
+            vest = bkp_vest;
+        }, false);
+
+
+        /* Choose this jacket configuration */
+        document.querySelector('#form-design_vest .choose-this').addEventListener('click', function(e) {
+            overall_suit.vest = vest;
+            next_step('pants');
+            e.preventDefault();
+            return false;
         }, false);
     });
 
@@ -1580,5 +1947,31 @@ document.addEventListener("DOMContentLoaded", function () {
             e.preventDefault();
             return false;
         }, false);
+
+
+        /* Choose this jacket configuration */
+        document.querySelector('#form-design_vest .choose-this').addEventListener('click', function(e) {
+            overall_suit.pants = pants;
+            // TODO
+            //      - slide down to the ADD to Cart btn
+            //      - make the btn visible
+            document.querySelector('.buy-holder a').classList.add('active');
+            e.preventDefault();
+            return false;
+        }, false);
     });
+
+
+    /*
+        Shopping cart
+    */
+    document.querySelector('.buy-holder a').addEventListener('click', function(e) {
+        if (Object.keys(overall_suit).length === 5) {
+            alert('Shopping cart!');
+        } else {
+            alert('Please finish the suit configuration');
+        }
+        e.preventDefault();
+        return false;
+    }, false);
 });
