@@ -1683,7 +1683,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 pleats:     'None',
                 //break:      'Standard',
                 cuffs:      'No',
-                bottons:    'Normal',
+                bottoms:    'Normal',
                 pockets:    'Angled',
                 beltloops:  'Yes',
                 fasteners:  'Buttons',
