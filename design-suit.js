@@ -1969,7 +1969,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (Object.keys(overall_suit).length === 5) {
             alert('Shopping cart!');
         } else {
-            alert('Please finish the suit configuration');
+            e.target.href = 'https://rashmi.foxycart.com/cart?name=Suit&price=2000&code=sku123';
         }
         e.preventDefault();
         return false;
